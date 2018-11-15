@@ -1,0 +1,43 @@
+# Site settings
+title: Flying blind - coding nonsense
+description: 'Strange advantures on the lands of Swift and Cocoa...'
+url: 'https://kicsipixel.github.io'
+baseurl: ''
+google_analytics: 'UA-129304930-1'
+disqus_shortname: 'kicsipixel'
+
+author:
+  name: 'Szabolcs Toth'
+  # email:
+  twitter_username: kicsipixel
+  # facebook_username: joshgerdes
+  github_username: kicsipixel
+  linkedin_username: szabolcs-tóth-10453aa
+
+defaults:
+  -
+    scope:
+      path: ''
+      type: 'posts'
+    values:
+        layout: 'post'
+
+# Build settings
+destination: _site
+paginate: 10
+permalink: /:year/:title/
+markdown: kramdown
+highlighter: rouge
+
+sass:
+    sass_dir: _sass
+    style: compressed
+
+kramdown:
+  # use Github Flavored Markdown
+  input: GFM
+  # do not replace newlines by <br>s
+  hard_wrap: false
+
+plugins: ['jekyll-paginate']
+exclude: ['README.md', 'Gemfile', 'Gemfile.lock', 'screenshot.png']
