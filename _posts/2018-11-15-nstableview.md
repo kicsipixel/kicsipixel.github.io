@@ -79,6 +79,12 @@ We need to implement the following two methods:
 
 It is considered to be a good practice to separate delegates from the main code as extension, so the following won't be added directly to the ```ViewController```.
 
+``` swift
+func numberOfRows(in tableView: NSTableView) -> Int {
+      return (people.count)
+  }
+```
+
 We would like to match the NSDictionary key to the column identifier and give the NSDictionary value to the cell. We can do it with ```if / else if / else``` or ```switch```, but let's try to make something smarter/shorter.  
 
 ``` swift
@@ -141,8 +147,8 @@ extension ViewController: NSTableViewDataSource, NSTableViewDelegate {
   func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
     let person = data[row]
     
-    let cell = tableView.makeView(withIdentifier: (tableColumn!.identifier), owner: self) as? NSTableCellView
-    cell?.textField?.stringValue = person[tableColumn!.identifier.rawValue]!
+    guard let cell = tableView.makeView(withIdentifier: tableColumn!.identifier, owner: self) as? NSTableCellView else { return nil }
+    cell.textField?.stringValue = person[tableColumn!.identifier.rawValue]!
     
     return cell
   }
