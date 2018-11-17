@@ -3,6 +3,7 @@ date: 2018-11-18
 title:  "PaintCode, the mindblowing tool"
 categories: [coding]
 tags: [paintcode, swift, design]
+comments: true
 ---
 There are several fantastic tools, I will write some of them later. I would like to start with [PaintCode].
 Drawing simple shapes (e.g. ovals, rectangles, etc) can be easy, but complex shape drawings are very tedious.

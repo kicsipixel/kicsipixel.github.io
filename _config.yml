@@ -4,7 +4,7 @@ description: 'Strange advantures on the lands of Swift and Cocoa...'
 url: 'https://kicsipixel.github.io'
 baseurl: ''
 google_analytics: 'UA-129304930-1'
-#disqus_shortname: 'kicsipixel'
+disqus_shortname: 'kicsipixel'
 
 author:
   name: 'Szabolcs Toth'
