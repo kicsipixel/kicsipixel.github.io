@@ -71,6 +71,8 @@ imageViewTextField.textColor = PaintCode.fillColor6
  ```
 
 Now, you will see both images as we planned.
+![app][PaintCode1]
+
 
 Source code: [Github](https://github.com/kicsipixel/Cocoa-Samples/tree/master/PaintCode)
 
