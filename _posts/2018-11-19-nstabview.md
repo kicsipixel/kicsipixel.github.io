@@ -7,7 +7,7 @@ tags: [macOS, cocoa, swift, NSTabView, NSSegmentedControl]
 
 Recently I found two very interesting articles about NSToolbar and NSSegmentedControl. One was written by [Christian Tietze](https://christiantietze.de/posts/2016/06/segmented-nstoolbaritem/) and the other by [sanjeetsuhag](https://www.saowen.com/a/78bee8d420f09c15a6c48040d14274a054b0cbd12bdb98d4ff708dd033b9b9c7).
 
-One of my projects I followed Chritian's tutorial. Today, for another project I'd have liked to follow sanjeetsuhag's one but found myself a little lost, so decided to create a little more detailed article, I hope he won't mind.
+During creating one of my projects I followed Chritian's tutorial. Today, for another project I'd have liked to follow sanjeetsuhag but found myself a little lost, so decided to create a little more detailed article, I hope he won't mind.
 
 On the left hand side, our project and on the right hand side hwo it would look with standard AppKit elements.
 ![final][NSTabview]
