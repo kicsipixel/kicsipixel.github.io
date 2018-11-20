@@ -87,8 +87,45 @@ var tabViewController: NSTabViewController?
 }
 
 When you run the code, you realize something went wrong. This is quite far from what we wanted...
-![bhua][NSTabView1-15]
+![:(][NSTabView1-15]
 
+**Step 12. Do the "magic"**
+
+Select the "Tab View Controller" on the Storyboard, and change the Style "Unspecified" in the Attribute Inspector tab.
+![unspecified][NSTabView1-16]
+
+Then, select the "Tab View" and change the Style to "Tabless".
+![tabless][NSTabView1-17]
+
+
+Let's try now...
+![better][NSTabView1-18]
+
+Looks much better...
+
+**Step 13. Add images to segmented control**
+
+Select the Segmented Control and on the Attributes Inspector tab, set an image to Segment 0.
+![segmentedimage][NSTabView1-19]
+
+Repeat the previous step on Segment 1 as well.
+![segmentedimage2][NSTabView1-20]
+
+**Step 14. The final touch**
+
+Add the following code in the windowDidLoad method in your WindowController:
+``` swift
+ if let window = window {
+  if let view = window.contentView {
+    view.wantsLayer = true
+    window.titleVisibility = .hidden
+    window.titlebarAppearsTransparent = true
+    window.backgroundColor = .white
+  }
+}
+```
+
+Source code: [Github](https://github.com/kicsipixel/Cocoa-Samples/tree/master/NSTabView)
 
 [NSTabView]:   /images/NSTabView.png
 [NSTabView1-1]: /images/NSTabView1-1.png
@@ -106,3 +143,8 @@ When you run the code, you realize something went wrong. This is quite far from 
 [NSTabView1-13]: /images/NSTabView1-13.png
 [NSTabView1-14]: /images/NSTabView1-14.png
 [NSTabView1-15]: /images/NSTabView1-15.png
+[NSTabView1-16]: /images/NSTabView1-16.png
+[NSTabView1-17]: /images/NSTabView1-17.png
+[NSTabView1-18]: /images/NSTabView1-18.png
+[NSTabView1-19]: /images/NSTabView1-19.png
+[NSTabView1-20]: /images/NSTabView1-20.png
