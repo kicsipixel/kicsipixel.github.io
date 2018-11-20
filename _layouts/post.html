@@ -14,6 +14,8 @@ layout: default
 
   <section class="post">
     {{ content }}
+    {% include share-page.html %}
+    <br />
   </section>
   {% if page.comments != false and site.disqus_shortname %}<section id="disqus_thread"></section><!-- /#disqus_thread -->{% endif %}
 </article>

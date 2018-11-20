@@ -5,6 +5,7 @@ url: 'https://kicsipixel.github.io'
 baseurl: ''
 google_analytics: 'UA-129304930-1'
 disqus_shortname: 'kicsipixel'
+twitter_username: 'kicsipixel'
 
 author:
   name: 'Szabolcs Toth'
