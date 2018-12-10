@@ -1,5 +1,5 @@
 ---
-date: 2018-12-09
+date: 2018-12-10
 title: "Light / Dark design"
 categories: [design]
 tags: [macOS, UI]
