@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Float columns side by side */
+.column {
+  float: left;
+  width: 50%;
+  padding: 0 10px;
+}
+
+/* Remove extra left and right margins, due to padding in columns */
+.row {margin: 0 -5px;}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.thumb img {
+	height: 100%;
+	width: 100%;
+	border-radius: 3px 3px 0 0;	
+}
+
+.thumb {
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05); /* this adds the "card" effect */
+  padding-bottom: 3px;
+  text-align: center;
+  background-color: #fff;
+  margin-bottom: 1em;
+  border-radius: 3px;
+}
+
+.thumb h5 {
+	color: #333;
+	font-weight: 500;
+	padding-bottom: 10px;
+} 
+
+
