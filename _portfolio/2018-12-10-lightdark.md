@@ -9,4 +9,4 @@ layout: portfolio-page
 
 ![portfolio][portfolio]
 
-[portfolio]:   /images/dark.png
+[portfolio]:   /images/Dark.png
