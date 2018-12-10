@@ -23,6 +23,11 @@ defaults:
     values:
         layout: 'post'
 
+collections:
+  portfolio:
+    output: true
+    permalink: /portfolio/:path/
+
 # Build settings
 destination: _site
 paginate: 10

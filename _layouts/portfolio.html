@@ -1,0 +1,25 @@
+---
+layout: default
+---
+
+
+<div class="row">
+    {% for portfolio in site.portfolio %}
+    <div class="column">
+      <div class="thumb">
+          <a href="{{ portfolio.url | prepend: site.baseurl }}">
+            {{ portfolio.excerpt }}
+            <h5> {{ portfolio.title }} </h5>
+          </a>
+       </div>     
+    </div>     
+    {% endfor %}
+</div>
+
+
+
+
+
+  
+
+ 
