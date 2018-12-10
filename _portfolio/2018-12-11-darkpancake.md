@@ -1,5 +1,5 @@
 ---
-date: 2018-12-12
+date: 2018-12-11
 title: "Big Pancake map"
 categories: [design]
 tags: [web, UI]
