@@ -44,17 +44,10 @@ So, instead of creating an Array with Dictionary, we add a new file.
 ``` swift
 import Cocoa
 
-class Person: NSObject {
+struct Person {
     let firstName: String
     let lastName: String
     let mobileNumber: String
-    
-    init(firstName: String, lastName: String, mobileNumber: String) {
-        self.firstName = firstName
-        self.lastName = lastName
-        self.mobileNumber = mobileNumber
-    }
-
 }
 ```
 
