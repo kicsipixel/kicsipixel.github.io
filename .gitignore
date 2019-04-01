@@ -4,4 +4,4 @@ _site
 *.sublime-project
 *.sublime-workspace
 .DS_Store
-start*.sh
+*.sh
