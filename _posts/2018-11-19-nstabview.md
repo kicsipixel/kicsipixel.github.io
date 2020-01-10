@@ -82,9 +82,9 @@ var tabViewController: NSTabViewController?
     let segmentedControl = sender as! NSSegmentedControl
 
     self.tabViewController?.selectedTabViewItemIndex = segmentedControl.selectedSegment
-  }
- ```   
+  }  
 }
+``` 
 
 When you run the code, you realize something went wrong. This is quite far from what we wanted...
 ![:(][NSTabView1-15]
