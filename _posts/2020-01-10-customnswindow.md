@@ -128,4 +128,4 @@ var mouseIsInside = false
 Run the code for the final result.
 ![final](/images/NSWindow.png)
 
-The source can be found [here.](https://github.com/kicsipixel/Custom-Cocoa-Controllers/tree/master/CustomWindow)
+Source code: [Github](https://github.com/kicsipixel/Custom-Cocoa-Controllers/tree/master/CustomWindow)
