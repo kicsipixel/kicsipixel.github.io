@@ -7,7 +7,7 @@ tags: [macOS, swift, NSWindow, custom, Storyboard]
 
 Earlier this year I wrote a short [blog post](https://kicsipixel.github.io/2020/nostoryboard/) about creating NSWindow without Storyboard with code only. While collecting information, I read several opinions why it was a tedious job, and it could be done better...
 
-Maybe the easiest way to mix Storyboard and coding approach. As I pointed out, recreation of NSMenu is a real pain/mess. So, what about keeping Main.storyboard for NSMenu only and code the rest of the components?
+Maybe the easiest way to mix Storyboard and coding approach. As I pointed out, recreation of ```NSMenu``` is a real pain/mess. So, what about keeping Main.storyboard for NSMenu only and code the rest of the components?
 
 
 **Step 1.**
@@ -42,7 +42,7 @@ I added these four constants:
 It's worth checking the documentation to find out more about NSWindow [StyleMask](https://developer.apple.com/documentation/appkit/nswindow/stylemask).
 
 **Step 4.**
-Add a new Cocoa class, an NSWindowController.
+Add a new Cocoa class, an ```NSWindowController```.
 
 ![Alt Text](https://dev-to-uploads.s3.amazonaws.com/i/llabmy38jye6t7m21wfa.png)
 
@@ -50,21 +50,21 @@ In the Controller file we need to define the size and position of our new window
 
 {% gist https://gist.github.com/kicsipixel/708f19d1a36b23f0c82667021e992d40 file=MainWindowController.swift %}
 
-Note: the convinience init method is required as NSWindowController cannot load the relevant xib file, unless NSViewController. Since we don't want to use any xib files, so we set empty string there.
+Note: the convinience init method is required as ```NSWindowController``` cannot load the relevant xib file, unless ```NSViewController```. Since we don't want to use any xib files, so we set empty string there.
 
 **Step 5.**
-Add a new Cocoa class, an NSViewController.
+Add a new Cocoa class, an ```NSViewController```.
 ![Alt Text](https://dev-to-uploads.s3.amazonaws.com/i/en666ihennxw0zd8s2dg.png)
 
-As I mentioned above, NSViewController will try to use xib file with the same name, we override this to set it to nil.
+As I mentioned above, ```NSViewController``` will try to use xib file with the same name, we override this to set it to nil.
 {% gist https://gist.github.com/kicsipixel/708f19d1a36b23f0c82667021e992d40 file=MyViewController.swift %}
 
-It's important not to forget that NSViewController is not enough alone. We need an NSView to show the content, which size is the same as defined for NSWindow.
+It's important not to forget that ```NSViewController``` is not enough alone. We need an ```NSView``` to show the content, which size is the same as defined for ```NSWindow```.
 
-Run the application. Everything seems to be fine but... we have no error and no window. Why? We have never told our application that it has an NSWindow.
+Run the application. Everything seems to be fine but... we have no error and no window. Why? We have never told our application that it has an ```NSWindow```.
 
 **Step 6.**
-Go to AppDelegate.swift and define our newly created NSWindow. Once we have it as variable, we need to show in applicationDidFinishLaunching method.
+Go to AppDelegate.swift and define our newly created ```NSWindow```. Once we have it as variable, we need to show in ```applicationDidFinishLaunching``` method.
 
 {% gist https://gist.github.com/kicsipixel/708f19d1a36b23f0c82667021e992d40 file=AppDelegate.swift %}
 
@@ -73,7 +73,7 @@ Run the application now, and you'll see the window.
 ![Alt Text](https://dev-to-uploads.s3.amazonaws.com/i/pmktd4oxntd028csa5xy.png)
 
 **Step 7.**
-Add 'Hello, World' label as NSTextField to the View using Constraints.
+Add 'Hello, World' label as ```NSTextField``` to the View using Constraints.
 
 {% gist https://gist.github.com/kicsipixel/708f19d1a36b23f0c82667021e992d40 file=label.swift %}
 
