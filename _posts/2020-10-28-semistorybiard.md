@@ -84,5 +84,3 @@ Your final app:
 ![Alt Text](https://dev-to-uploads.s3.amazonaws.com/i/84t7519xsdoy5ytvmp2g.png)
 
 Source code: [Github](https://github.com/kicsipixel/Cocoa-Samples/tree/master/SemiStoryboard)
-
-You can find more macOS programming tutorial on my [blog](https://kicsipixel.github.io).
