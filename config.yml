@@ -1,0 +1,43 @@
+baseURL: https://kicsipixel.github.io
+disablePathToLower: true
+languageCode: en-us
+title: Flying blind - coding nonsense
+theme: PaperMod
+paginate: 10
+
+enableRobotsTXT: true
+buildDrafts: false
+buildFuture: false
+buildExpired: false
+
+params:
+  env: production
+  homeInfoParams:
+      Title: Advantures of Swift and Cocoa
+      Content: My experiences about macOS and iOS coding. Strictly for documentation purposes.
+  
+  socialIcons:
+      - name: github
+        url: "https://github.com/kicsipixel"
+      - name: twitter
+        url: "https://twitter.com/kicsipixel"
+      - name: linkedin
+        url: "https://www.linkedin.com/in/szabolcs-t%C3%B3th-10453aa"
+      - name: instagram
+        url: "https://www.instagram.com/kcspxl/"
+
+  author: Szabolcs Toth
+  # images: ["<link or path of image for opengraph, twitter-cards>"]
+  DateFormat: "January 2, 2006"
+  defaultTheme: auto
+  ShowReadingTime: true
+  ShowPostNavLinks: true
+  ShowBreadCrumbs: true
+  ShowCodeCopyButtons: true
+  disableSpecial1stPost: false
+  disableScrollToTop: false
+  comments: false
+  hidemeta: false
+  hideSummary: true
+  showtoc: false
+  tocopen: false
