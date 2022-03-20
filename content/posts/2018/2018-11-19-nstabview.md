@@ -3,6 +3,8 @@ title:  "NSTabView controlled by NSSegmentedControl"
 date: 2018-11-19
 tags: ["macOS", "Cocoa", "Swift", "NSTabView", "NSSegmentedControl", "Xcode"]
 author: ["Szabolcs Tóth"]
+cover:
+    image: /images/segment.png
 draft: false
 ---
 

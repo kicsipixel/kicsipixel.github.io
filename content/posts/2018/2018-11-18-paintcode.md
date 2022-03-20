@@ -3,6 +3,8 @@ title:  "PaintCode, the mindblowing tool"
 date: 2018-11-18
 tags: ["PaintCode", "Swift", "Design"]
 author: ["Szabolcs Tóth"]
+cover:
+    image: /images/designer.png
 draft: false
 ---
 

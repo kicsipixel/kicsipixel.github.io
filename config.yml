@@ -3,7 +3,7 @@ disablePathToLower: true
 languageCode: en-us
 title: Flying blind - coding nonsense
 theme: PaperMod
-paginate: 10
+paginate: 5
 
 enableRobotsTXT: true
 buildDrafts: false

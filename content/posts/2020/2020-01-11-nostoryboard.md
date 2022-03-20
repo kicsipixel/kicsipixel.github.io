@@ -3,6 +3,8 @@ title:  "NSWindow without Storyboard"
 date: 2020-01-11
 tags: ["macOS", "Swift", "NSWindow", "Storyboard"]
 author: ["Szabolcs Tóth"]
+cover:
+    image: /images/storyboard.png
 draft: false
 ---
 

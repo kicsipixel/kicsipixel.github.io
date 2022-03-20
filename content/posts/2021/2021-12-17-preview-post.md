@@ -3,6 +3,8 @@ title: "SwiftUI Preview "
 date: 2021-12-17
 tags: ["iOS", "Xcode", "SwiftUI"]
 author: ["Szabolcs Tóth"]
+cover:
+    image: /images/preview.png
 draft: false
 ---
 
