@@ -70,6 +70,8 @@ class ViewController: NSViewController {
 
 As I promised it was very simple even without using Storyboard.
 
+You can find the source code [here](https://github.com/kicsipixel/PaintCodemacOS.git).
+
 
 [PaintCode]:		https://www.paintcodeapp.com/
 [post]:				https://kicsipixel.github.io/posts/2018/2018-11-18-paintcode/
