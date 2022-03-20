@@ -3,8 +3,6 @@ title:  "HelloPoly - Stanford University CS193P iPhone application development"
 date: 2019-11-30
 tags: ["iOS",  "macOS", "Swift", "SwiftUI", "Objective-C", "CS193P"]
 author: ["Szabolcs Tóth"]
-cover:
-    image: /images/shape.png
 draft: false
 ---
 

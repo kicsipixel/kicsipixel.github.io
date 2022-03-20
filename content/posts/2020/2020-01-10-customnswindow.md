@@ -3,8 +3,6 @@ title:  "Custom NSWindow"
 date: 2020-01-10
 tags: ["macOS", "Swift", "NSWindow"]
 author: ["Szabolcs Tóth"]
-cover:
-    image: /images/window.png
 draft: false
 ---
 

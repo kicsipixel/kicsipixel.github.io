@@ -3,7 +3,7 @@ disablePathToLower: true
 languageCode: en-us
 title: Flying blind - coding nonsense
 theme: PaperMod
-paginate: 5
+paginate: 10
 
 enableRobotsTXT: true
 buildDrafts: false
@@ -14,7 +14,7 @@ params:
   env: production
   homeInfoParams:
       Title: Advantures of Swift and Cocoa
-      Content: My experiences about macOS and iOS coding. Strictly for documentation purposes.
+      Content: My experiences about macOS and iOS coding. Strictly for documentation purposes.![](/images/cover.png)
   
   socialIcons:
       - name: github

@@ -3,8 +3,6 @@ title: "Handling colors in SwiftUI easily"
 date: 2021-12-16
 tags: ["iOS", "Xcode", "SwiftUI"]
 author: ["Szabolcs Tóth"]
-cover:
-    image: /images/colors.png
 draft: false
 ---
 

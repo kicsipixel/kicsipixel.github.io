@@ -3,8 +3,6 @@ title:  "Hello World!"
 date: 2018-11-15
 tags: ["General"]
 author: ["Szabolcs Tóth"]
-cover:
-    image: /images/universe.png
 draft: false
 ---
 

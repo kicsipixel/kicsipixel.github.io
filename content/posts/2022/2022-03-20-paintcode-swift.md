@@ -3,8 +3,6 @@ title: "PaintCode on macOS with Swift"
 date: 2022-03-20
 tags: ["macOS", Xcode", "Swift", "Cocoa"]
 author: ["Szabolcs Tóth"]
-cover:
-    image: /images/PaintCodemacOSCover.png
 draft: false
 ---
 

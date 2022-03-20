@@ -3,8 +3,6 @@ title: "Very simple view-based NSTableView in Swift 4.2"
 date: 2018-11-16
 tags: ["macOS", "Cocoa", "Xcode", "Swift", "NSTableView"]
 author: ["Szabolcs Tóth"]
-cover:
-    image: /images/coding.png
 draft: false
 ---
 
