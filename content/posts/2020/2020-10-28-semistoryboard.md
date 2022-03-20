@@ -31,7 +31,14 @@ This way we can keep ```NSMenu``` and need to recreate ```NSWindow``` and ```NSV
 Add a new Cocoa (NSWindow) class with the following code:
 ![Alt Text](https://dev-to-uploads.s3.amazonaws.com/i/a74g0sx96nqn756wufsn.png)
 
-{% gist 708f19d1a36b23f0c82667021e992d40 MainWindow.swift %}
+```swift
+class MainWindow: NSWindow {
+    override init(contentRect: NSRect, styleMask style: NSWindow.StyleMask, backing backingStoreType: NSWindow.BackingStoreType, defer flag: Bool) {
+        super.init(contentRect: contentRect, styleMask: [.miniaturizable, .closable, .resizable, .titled],  backing: .buffered, defer: true)
+         isMovableByWindowBackground = true
+     }
+}
+```
 
 Probably, the most important part of [NSWindow init](https://developer.apple.com/documentation/appkit/nswindow/1419477-init) method is the StyleMask.
 
