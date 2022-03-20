@@ -3,10 +3,15 @@ title: "PaintCode on macOS with Swift"
 date: 2022-03-20
 tags: ["macOS", Xcode", "Swift", "Cocoa"]
 author: ["Szabolcs Tóth"]
+cover:
+    image: /images/PaintCodemacOSCover.png
 draft: false
 ---
 
-I already wrote about [PaintCode] in this [post]. This time I will show you how to use PaintCode without Storyboard. I will add the [Figma] file and PaintCode file to GitHub repository. The code itself is very simple.
+I already wrote about [PaintCode] in this [post]. I think this is one of the most usefull tool, if you want to convert complex vector graphics to Swift of ObjC code.
+
+This time I will show you how to use PaintCode without Storyboard. I will add the [Figma] file and PaintCode file to GitHub repository. The code itself is very simple.
+
 ![][PaintCodemacOS]
 
 **Step 1.**
