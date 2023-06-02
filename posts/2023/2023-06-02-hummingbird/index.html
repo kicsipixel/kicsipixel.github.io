@@ -1,0 +1,365 @@
+<!doctype html><html lang=en dir=auto><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Park API - Server side Swift with Hummingbird | Flying blind - coding nonsense</title><meta name=keywords content="iOS,macOS,swift,server,git,hummingbird,api"><meta name=description content="Server side Swift has been available since end of 2015. The idea was behind the development that you can use the same language for RESTful APIs, desktop and mobile applications. With the evolution of the Swift language, the different Swift web frameworks got more robust and complex.
+That&rsquo;s why I was happy to read Tib&rsquo;s excellent article about a new HTTP server library written in Swift, Hummingbird. I immediately liked the concept of modularity, so decided to create a tutorial to show its simplicity."><meta name=author content="Szabolcs Tóth"><link rel=canonical href=https://kicsipixel.github.io/posts/2023/2023-06-02-hummingbird/><link crossorigin=anonymous href=/assets/css/stylesheet.min.48a18943c2fc15c38a372b8dde1f5e5dc0bc64fa6cb90f5a817d2f8c76b7f3ae.css integrity="sha256-SKGJQ8L8FcOKNyuN3h9eXcC8ZPpsuQ9agX0vjHa3864=" rel="preload stylesheet" as=style><script defer crossorigin=anonymous src=/assets/js/highlight.min.b95bacdc39e37a332a9f883b1e78be4abc1fdca2bc1f2641f55e3cd3dabd4d61.js integrity="sha256-uVus3DnjejMqn4g7Hni+Srwf3KK8HyZB9V4809q9TWE=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://kicsipixel.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://kicsipixel.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://kicsipixel.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://kicsipixel.github.io/apple-touch-icon.png><link rel=mask-icon href=https://kicsipixel.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--hljs-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style></noscript><meta property="og:title" content="Park API - Server side Swift with Hummingbird"><meta property="og:description" content="Server side Swift has been available since end of 2015. The idea was behind the development that you can use the same language for RESTful APIs, desktop and mobile applications. With the evolution of the Swift language, the different Swift web frameworks got more robust and complex.
+That&rsquo;s why I was happy to read Tib&rsquo;s excellent article about a new HTTP server library written in Swift, Hummingbird. I immediately liked the concept of modularity, so decided to create a tutorial to show its simplicity."><meta property="og:type" content="article"><meta property="og:url" content="https://kicsipixel.github.io/posts/2023/2023-06-02-hummingbird/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2023-06-02T12:04:31+02:00"><meta property="article:modified_time" content="2023-06-02T12:04:31+02:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Park API - Server side Swift with Hummingbird"><meta name=twitter:description content="Server side Swift has been available since end of 2015. The idea was behind the development that you can use the same language for RESTful APIs, desktop and mobile applications. With the evolution of the Swift language, the different Swift web frameworks got more robust and complex.
+That&rsquo;s why I was happy to read Tib&rsquo;s excellent article about a new HTTP server library written in Swift, Hummingbird. I immediately liked the concept of modularity, so decided to create a tutorial to show its simplicity."><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":2,"name":"Posts","item":"https://kicsipixel.github.io/posts/"},{"@type":"ListItem","position":3,"name":"Park API - Server side Swift with Hummingbird","item":"https://kicsipixel.github.io/posts/2023/2023-06-02-hummingbird/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Park API - Server side Swift with Hummingbird","name":"Park API - Server side Swift with Hummingbird","description":"Server side Swift has been available since end of 2015. The idea was behind the development that you can use the same language for RESTful APIs, desktop and mobile applications. With the evolution of the Swift language, the different Swift web frameworks got more robust and complex.\nThat\u0026rsquo;s why I was happy to read Tib\u0026rsquo;s excellent article about a new HTTP server library written in Swift, Hummingbird. I immediately liked the concept of modularity, so decided to create a tutorial to show its simplicity.","keywords":["iOS","macOS","swift","server","git","hummingbird","api"],"articleBody":"Server side Swift has been available since end of 2015. The idea was behind the development that you can use the same language for RESTful APIs, desktop and mobile applications. With the evolution of the Swift language, the different Swift web frameworks got more robust and complex.\nThat’s why I was happy to read Tib’s excellent article about a new HTTP server library written in Swift, Hummingbird. I immediately liked the concept of modularity, so decided to create a tutorial to show its simplicity.\nWe will build a swift server running on SQLite database, which will store playgrounds around the city with name and coordinates. A simple JSON response will look like this:\n[ { \"latitude\": 50.105848999999999, \"longitude\": 14.413999, \"name\": \"Stromovka\" }, { \"latitude\": 50.0959721, \"longitude\": 14.4202892, \"name\": \"Letenské sady\" }, { \"latitude\": 50.132259369, \"longitude\": 14.46098423, \"name\": \"Žernosecká - Čumpelíkova\" } ] The project will use FeatherCMS’s own Database Component.\nStep 1. - Init the project mkdir parkAPI \u0026\u0026 cd $_ swift package init --type executable This creates the backbones of our project. One of the most important file and initial point of our project is the Package.swift, the Swift manifest file. Here you can read more about it.\nStep 2. - Create the folder structure We need to follow a certain guidelines about folder structure, otherwise the compiler won’t be able to handle our project. On the picture below, you can find the simplest structure, which follow the Hummingbird template.\n. ├── Package.swift ├── README.md └── Sources └── parkAPI ├── App.swift └── Application+configure.swift We will add the Tests folder later, when we will have something to test.\nStep 3. - Run the server Before we are able to run our server, we need to add two packages to the Package.swift file:\nHummingbird Swift Argument Parser Using .executableTarget the @main will be the enrty point of our application and we can rename main.swift to App.swift. Paul Hudson wrote a short article about it.\nimport PackageDescription let package = Package( name: \"parkAPI\", platforms: [ .macOS(.v12), ], dependencies: [ .package(url: \"https://github.com/hummingbird-project/hummingbird\", from: \"1.5.0\"), .package(url: \"https://github.com/apple/swift-argument-parser\",from: \"1.2.0\"), ], targets: [ .executableTarget( name: \"parkAPI\", dependencies: [ .product(name: \"ArgumentParser\", package: \"swift-argument-parser\"), .product(name: \"Hummingbird\", package: \"hummingbird\"), .product(name: \"HummingbirdFoundation\", package: \"hummingbird\"), ], swiftSettings: [ .unsafeFlags( [\"-cross-module-optimization\"], .when(configuration: .release) ) ] ) ] ) Define the hostname and port in the App.swift.\nimport ArgumentParser import Hummingbird @main struct App: ParsableCommand { @Option(name: .shortAndLong) var hostname: String = \"127.0.0.1\" @Option(name: .shortAndLong) var port: Int = 8080 func run() throws { let app = HBApplication( configuration: .init( address: .hostname(hostname, port: port), serverName: \"parkAPI\" ) ) try app.configure() try app.start() app.wait() } } One last thing remained before we can run our application is to define the route in the Application+configuration.swift.\nimport Hummingbird import HummingbirdFoundation public extension HBApplication { func configure() throws { router.get(\"/\") { _ in \"The server is running...🚀\" } } } Run out first Hummingbird server by typing:\nswift run parkAPI Step 4. Create API response Our server will be accessible on the following routes, using different HTTP methods.\nGET - http://hostname/api/v1/parks: Lists all the parks in the database GET - http://hostname/api/v1/parks/:id: Shows a single park with given id POST - http://hostname/api/v1/parks: Creates a new park PATCH - http://hostname/api/v1/parks/:id: Updates the park with the given id DELETE - http://hostname/api/v1/parks/:id: Removes the park with id from database Step 4.1 Add database dependency Our server will use SQLite database to store all data, so we need to add the database dependency to our manifest file. This will allow the server to communicate to the database.\nThe updated Package.swift file will look like this:\nimport PackageDescription let package = Package( name: \"parkAPI\", platforms: [ .macOS(.v12) ], dependencies: [ .package(url: \"https://github.com/hummingbird-project/hummingbird\", from: \"1.5.0\"), .package(url: \"https://github.com/apple/swift-argument-parser\",from: \"1.2.0\"), // Database dependency .package(url: \"https://github.com/feathercms/hummingbird-db\", branch: \"main\") ], targets: [ .executableTarget( name: \"parkAPI\", dependencies: [ .product(name: \"ArgumentParser\", package: \"swift-argument-parser\"), .product(name: \"Hummingbird\", package: \"hummingbird\"), .product(name: \"HummingbirdFoundation\", package: \"hummingbird\"), // Database dependencies .product(name: \"HummingbirdDatabase\", package: \"hummingbird-db\"), .product(name: \"HummingbirdSQLiteDatabase\", package: \"hummingbird-db\"), ], swiftSettings: [ .unsafeFlags( [\"-cross-module-optimization\"], .when(configuration: .release) ) ] ) ] ) Step 4.2 Use concurrency in App.swift Add async to function run() and await to app.configure.\nimport ArgumentParser import Hummingbird @main struct App: AsyncParsableCommand, AppArguments { @Option(name: .shortAndLong) var hostname: String = \"127.0.0.1\" @Option(name: .shortAndLong) var port: Int = 8080 func run() async throws { let app = HBApplication( configuration: .init( address: .hostname(hostname, port: port), serverName: \"Hummingbird\" ) ) try await app.configure() try app.start() app.wait() } } We need to use AsyncParsableCommand and AppArguments protocols.\nStep 4.3 Create a database configuration file Add a new file, with name DatabaseSetup.swift file under a new Database folder under Source/parkAPI/.\nimport Hummingbird import HummingbirdSQLiteDatabase extension HBApplication { func setupDatabase() async throws { // Name and location of the SQLite database file let path = \"./hb-parks.sqlite\" services.setUpSQLiteDatabase( path: path, threadPool: threadPool, eventLoopGroup: eventLoopGroup, logger: logger ) // Create the database table try await db.execute( .init(unsafeSQL: \"\"\" CREATE TABLE IF NOT EXISTS parks ( \"id\" uuid PRIMARY KEY, \"latitude\" double NOT NULL, \"longitude\" double NOT NULL, \"name\" text NOT NULL ); \"\"\" ) ) } } Step 4.4 Call the setupDatabase function Add try await setupDatabase() to Application+configure.swift.\nimport Hummingbird import HummingbirdFoundation public protocol AppArguments {} public extension HBApplication { func configure() async throws { // Setup the database try await setupDatabase() // Set encoder and decoder encoder = JSONEncoder() decoder = JSONDecoder() // Logger logger.logLevel = .debug // Middleware middleware.add(HBLogRequestsMiddleware(.debug)) middleware.add(HBCORSMiddleware( allowOrigin: .originBased, allowHeaders: [\"Content-Type\"], allowMethods: [.GET, .OPTIONS, .POST, .DELETE, .PATCH] )) router.get(\"/\") { _ in \"The server is running...🚀\" } // Additional routes are defined in the controller // We want our server to respond on \"api/v1/parks\" ParkController().addRoutes(to: router.group(\"api/v1/parks\")) } } Step 4.5 Create the park model Add the Park.swift under /Source/parkAPI/Models.\nimport Foundation import Hummingbird struct Park: Codable { let id: UUID let latitude: Double let longitude: Double let name: String init(id: UUID, latitude: Double, longitude: Double, name: String) { self.id = id self.latitude = latitude self.longitude = longitude self.name = name } } extension Park: HBResponseCodable {} Step 4.6 Create the park controller The Controller receives an input from the users, then processes the user’s data with the help of Model and passes the results back. Add ParkController.swift to a new Controllers folder under Source/parkAPI/.\nimport Foundation import Hummingbird import HummingbirdDatabase extension UUID: LosslessStringConvertible { public init?(_ description: String) { self.init(uuidString: description) } } struct ParkController { // Define the table in the databse let tableName = \"parks\" // The routes for CRUD operations func addRoutes(to group: HBRouterGroup) { group .get(use: list) } // Return all parks func list(req: HBRequest) async throws -\u003e [Park] { let sql = \"\"\" SELECT * FROM parks \"\"\" let query = HBDatabaseQuery(unsafeSQL: sql) return try await req.db.execute(query, rowType: Park.self) } } In the controller file, define the table of the database you want to use, ideally it is the same as you defined in the DatabaseSetup.swift file.\nUse HBRouterGroup to collect all routes under single path.\nGET - all parks Start with listing all elements: .get(use: list) Where get refers to GET method and use to the function where you describe what supposed to happen, if you call that endpoint.\nThe list() function returns with the array of Park model.\nGET - park with {id} Show park with specified id: .get(\":id\", use: show).\nfunc show(req: HBRequest) async throws -\u003e Park? { let id = try req.parameters.require(\"id\", as: UUID.self) let sql = \"\"\" SELECT * FROM parks WHERE id = :id: \"\"\" let query = HBDatabaseQuery( unsafeSQL: sql, bindings: [\"id\": id] ) let rows = try await req.db.execute(query, rowType: Park.self) return rows.first } POST - create park Create new park: .post(options: .editResponse, use: create).\nfunc create(req: HBRequest) async throws -\u003e Park { struct CreatePark: Decodable { let latitude: Double let longitude: Double let name: String } let park = try req.decode(as: CreatePark.self) let id = UUID() let row = Park( id: id, latitude: park.latitude, longitude: park.longitude, name: park.name ) let sql = \"\"\" INSERT INTO parks (id, latitude, longitude, name) VALUES (:id:, :latitude:, :longitude:, :name:) \"\"\" try await req.db.execute(.init(unsafeSQL: sql, bindings: row)) req.response.status = .created PATCH - update park with {id} Update park with specified id: ‌.patch(\":id\", use: update)\nfunc update(req: HBRequest) async throws -\u003e HTTPResponseStatus { struct UpdatePark: Decodable { var latitude: Double? var longitude: Double? var name: String? } let id = try req.parameters.require(\"id\", as: UUID.self) let park = try req.decode(as: UpdatePark.self) let sql = \"\"\" UPDATE parks SET \"latitude\" = CASE WHEN :1: IS NOT NULL THEN :1: ELSE \"latitude\" END, \"longitude\" = CASE WHEN :2: IS NOT NULL THEN :2: ELSE \"longitude\" END, \"name\" = CASE WHEN :3: IS NOT NULL THEN :3: ELSE \"name\" END WHERE id = :0: \"\"\" try await req.db.execute( .init( unsafeSQL: sql, bindings: id, park.latitude, park.longitude, park.name ) ) return .ok } As in the DatabaseSetup.swift file we defined that none of table columns can be NULL, we need to check that the request contains all values of only some of them and update the columns respectively.\nDELETE - delete park with {id} Delete park with specified id: .delete(\":id\", use: deletePark)\nfunc deletePark(req: HBRequest) async throws -\u003e HTTPResponseStatus { let id = try req.parameters.require(\"id\", as: UUID.self) let sql = \"\"\" DELETE FROM parks WHERE id = :0: \"\"\" try await req.db.execute( .init( unsafeSQL: sql, bindings: id ) ) return .ok } } Our final folder structure looks like this:\n. ├── Package.swift ├── README.md └── Sources └── parkAPI ├── App.swift ├── Application+configure.swift ├── Controllers │ └── ParkController.swift ├── Database │ └── DatabaseSetup.swift └── Models └── Park.swift Step 5: Run the API server: swift run parkAPI\nYou can reach the server on: http://127.0.0.1:8080\nSummary I was impressed how easily and quickly I could build a working API server using Hummingbird and FeatherCMS’s Database Component. Building and running the project took very minimal time comparing to Vapor. I highly recommend to try Hummingbird project in case you want something light and modular on Server side Swift.\nYou can find the source code here.\n","wordCount":"1647","inLanguage":"en","datePublished":"2023-06-02T12:04:31+02:00","dateModified":"2023-06-02T12:04:31+02:00","author":[{"@type":"Person","name":"Szabolcs Tóth"}],"mainEntityOfPage":{"@type":"WebPage","@id":"https://kicsipixel.github.io/posts/2023/2023-06-02-hummingbird/"},"publisher":{"@type":"Organization","name":"Flying blind - coding nonsense","logo":{"@type":"ImageObject","url":"https://kicsipixel.github.io/favicon.ico"}}}</script></head><body id=top><script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add("dark"):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove("dark"):window.matchMedia("(prefers-color-scheme: dark)").matches&&document.body.classList.add("dark")</script><header class=header><nav class=nav><div class=logo><a href=https://kicsipixel.github.io accesskey=h title="Flying blind - coding nonsense (Alt + H)">Flying blind - coding nonsense</a>
+<span class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></span></div><ul id=menu></ul></nav></header><main class=main><article class=post-single><header class=post-header><div class=breadcrumbs><a href=https://kicsipixel.github.io>Home</a>&nbsp;»&nbsp;<a href=https://kicsipixel.github.io/posts/>Posts</a></div><h1 class=post-title>Park API - Server side Swift with Hummingbird</h1><div class=post-meta><span title='2023-06-02 12:04:31 +0200 +0200'>June 2, 2023</span>&nbsp;·&nbsp;8 min&nbsp;·&nbsp;Szabolcs Tóth</div></header><div class=post-content><p>Server side Swift has been available since end of 2015. The idea was behind the development that you can use the same language for RESTful APIs, desktop and mobile applications. With the evolution of the Swift language, the different Swift web frameworks got more robust and complex.</p><p>That&rsquo;s why I was happy to read <a href=https://theswiftdev.com/beginners-guide-to-server-side-swift-using-the-hummingbird-framework>Tib&rsquo;s excellent article</a> about a new HTTP server library written in Swift, <a href=https://github.com/hummingbird-project/hummingbird>Hummingbird</a>. I immediately liked the concept of modularity, so decided to create a tutorial to show its simplicity.</p><p>We will build a swift server running on SQLite database, which will store playgrounds around the city with name and coordinates. A simple JSON response will look like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=display:flex><span>[
+</span></span><span style=display:flex><span>	{
+</span></span><span style=display:flex><span>		<span style=color:#f92672>&#34;latitude&#34;</span>: <span style=color:#ae81ff>50.105848999999999</span>,
+</span></span><span style=display:flex><span>		<span style=color:#f92672>&#34;longitude&#34;</span>: <span style=color:#ae81ff>14.413999</span>,
+</span></span><span style=display:flex><span>		<span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Stromovka&#34;</span>
+</span></span><span style=display:flex><span>	},
+</span></span><span style=display:flex><span>	{
+</span></span><span style=display:flex><span>		<span style=color:#f92672>&#34;latitude&#34;</span>: <span style=color:#ae81ff>50.0959721</span>,
+</span></span><span style=display:flex><span>		<span style=color:#f92672>&#34;longitude&#34;</span>: <span style=color:#ae81ff>14.4202892</span>,
+</span></span><span style=display:flex><span>		<span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Letenské sady&#34;</span>
+</span></span><span style=display:flex><span>	}, {
+</span></span><span style=display:flex><span>		<span style=color:#f92672>&#34;latitude&#34;</span>: <span style=color:#ae81ff>50.132259369</span>,
+</span></span><span style=display:flex><span>		<span style=color:#f92672>&#34;longitude&#34;</span>: <span style=color:#ae81ff>14.46098423</span>,
+</span></span><span style=display:flex><span>		<span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Žernosecká - Čumpelíkova&#34;</span>
+</span></span><span style=display:flex><span>	}
+</span></span><span style=display:flex><span>]
+</span></span></code></pre></div><p>The project will use FeatherCMS&rsquo;s own <a href=https://github.com/FeatherCMS/hummingbird-db>Database Component</a>.</p><h2 id=step-1---init-the-project>Step 1. - Init the project<a hidden class=anchor aria-hidden=true href=#step-1---init-the-project>#</a></h2><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=display:flex><span>mkdir parkAPI <span style=color:#f92672>&amp;&amp;</span> cd $_
+</span></span><span style=display:flex><span>swift package init --type executable
+</span></span></code></pre></div><p>This creates the backbones of our project. One of the most important file and initial point of our project is the <code>Package.swift</code>, the Swift manifest file. <a href=https://theswiftdev.com/the-swift-package-manifest-file/>Here</a> you can read more about it.</p><h2 id=step-2---create-the-folder-structure>Step 2. - Create the folder structure<a hidden class=anchor aria-hidden=true href=#step-2---create-the-folder-structure>#</a></h2><p>We need to follow a certain guidelines about folder structure, otherwise the compiler won&rsquo;t be able to handle our project. On the picture below, you can find the simplest structure, which follow the <a href=https://github.com/hummingbird-project/template>Hummingbird template</a>.</p><pre tabindex=0><code>.
+├── Package.swift
+├── README.md
+└── Sources
+    └── parkAPI
+        ├── App.swift
+        └── Application+configure.swift
+</code></pre><p>We will add the <code>Tests</code> folder later, when we will have something to test.</p><h2 id=step-3---run-the-server>Step 3. - Run the server<a hidden class=anchor aria-hidden=true href=#step-3---run-the-server>#</a></h2><p>Before we are able to run our server, we need to add two packages to the <code>Package.swift</code> file:</p><ul><li>Hummingbird</li><li>Swift Argument Parser</li></ul><p>Using <code>.executableTarget</code> the <code>@main</code> will be the enrty point of our application and we can rename <code>main.swift</code> to <code>App.swift</code>. Paul Hudson wrote a <a href=https://www.hackingwithswift.com/swift/5.4/spm-executable-targets>short article</a> about it.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>PackageDescription</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> package = Package(
+</span></span><span style=display:flex><span>    name: <span style=color:#e6db74>&#34;parkAPI&#34;</span>,
+</span></span><span style=display:flex><span>    platforms: [
+</span></span><span style=display:flex><span>        .macOS(.v12),
+</span></span><span style=display:flex><span>    ],
+</span></span><span style=display:flex><span>    dependencies: [
+</span></span><span style=display:flex><span>        .package(url: <span style=color:#e6db74>&#34;https://github.com/hummingbird-project/hummingbird&#34;</span>, from: <span style=color:#e6db74>&#34;1.5.0&#34;</span>),
+</span></span><span style=display:flex><span>        .package(url: <span style=color:#e6db74>&#34;https://github.com/apple/swift-argument-parser&#34;</span>,from: <span style=color:#e6db74>&#34;1.2.0&#34;</span>),
+</span></span><span style=display:flex><span>    ],
+</span></span><span style=display:flex><span>    targets: [
+</span></span><span style=display:flex><span>        .executableTarget(
+</span></span><span style=display:flex><span>            name: <span style=color:#e6db74>&#34;parkAPI&#34;</span>,
+</span></span><span style=display:flex><span>            dependencies: [
+</span></span><span style=display:flex><span>                .product(name: <span style=color:#e6db74>&#34;ArgumentParser&#34;</span>, package: <span style=color:#e6db74>&#34;swift-argument-parser&#34;</span>),
+</span></span><span style=display:flex><span>                .product(name: <span style=color:#e6db74>&#34;Hummingbird&#34;</span>, package: <span style=color:#e6db74>&#34;hummingbird&#34;</span>),
+</span></span><span style=display:flex><span>                .product(name: <span style=color:#e6db74>&#34;HummingbirdFoundation&#34;</span>, package: <span style=color:#e6db74>&#34;hummingbird&#34;</span>),
+</span></span><span style=display:flex><span>            ],
+</span></span><span style=display:flex><span>            swiftSettings: [
+</span></span><span style=display:flex><span>                .unsafeFlags(
+</span></span><span style=display:flex><span>                    [<span style=color:#e6db74>&#34;-cross-module-optimization&#34;</span>],
+</span></span><span style=display:flex><span>                    .when(configuration: .release)
+</span></span><span style=display:flex><span>                )
+</span></span><span style=display:flex><span>            ]
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>    ]
+</span></span><span style=display:flex><span>)
+</span></span></code></pre></div><p>Define the hostname and port in the <code>App.swift</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>ArgumentParser</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Hummingbird</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>@main
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>App</span>: ParsableCommand {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    @Option(name: .shortAndLong)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> hostname: String = <span style=color:#e6db74>&#34;127.0.0.1&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    @Option(name: .shortAndLong)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> port: Int = <span style=color:#ae81ff>8080</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>run</span>() <span style=color:#66d9ef>throws</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> app = HBApplication(
+</span></span><span style=display:flex><span>            configuration: .<span style=color:#66d9ef>init</span>(
+</span></span><span style=display:flex><span>                address: .hostname(hostname, port: port),
+</span></span><span style=display:flex><span>                serverName: <span style=color:#e6db74>&#34;parkAPI&#34;</span>
+</span></span><span style=display:flex><span>            )
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> app.configure()
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> app.start()
+</span></span><span style=display:flex><span>        app.wait()
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>One last thing remained before we can run our application is to define the <code>route</code> in the <code>Application+configuration.swift</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Hummingbird</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>HummingbirdFoundation</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>extension</span> <span style=color:#a6e22e>HBApplication</span> {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>configure</span>() <span style=color:#66d9ef>throws</span> {
+</span></span><span style=display:flex><span>         router.<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>&#34;/&#34;</span>) { <span style=color:#66d9ef>_</span> <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;The server is running...🚀&#34;</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Run out first Hummingbird server by typing:</p><pre tabindex=0><code>swift run parkAPI
+</code></pre><h2 id=step-4-create-api-response>Step 4. Create API response<a hidden class=anchor aria-hidden=true href=#step-4-create-api-response>#</a></h2><p>Our server will be accessible on the following routes, using different <a href=https://www.freecodecamp.org/news/http-request-methods-explained/>HTTP methods</a>.</p><ul><li><code>GET</code> - <code>http://hostname/api/v1/parks</code>: Lists all the parks in the database</li><li><code>GET</code> - <code>http://hostname/api/v1/parks/:id</code>: Shows a single park with given id</li><li><code>POST</code> - <code>http://hostname/api/v1/parks</code>: Creates a new park</li><li><code>PATCH</code> - <code>http://hostname/api/v1/parks/:id</code>: Updates the park with the given id</li><li><code>DELETE</code> - <code>http://hostname/api/v1/parks/:id</code>: Removes the park with id from database</li></ul><h3 id=step-41-add-database-dependency>Step 4.1 Add database dependency<a hidden class=anchor aria-hidden=true href=#step-41-add-database-dependency>#</a></h3><p>Our server will use SQLite database to store all data, so we need to add the <a href=https://github.com/FeatherCMS/hummingbird-db>database dependency</a> to our manifest file. This will allow the server to communicate to the database.</p><p>The updated <code>Package.swift</code> file will look like this:</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>PackageDescription</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>let</span> package = Package(
+</span></span><span style=display:flex><span>    name: <span style=color:#e6db74>&#34;parkAPI&#34;</span>,
+</span></span><span style=display:flex><span>    platforms: [
+</span></span><span style=display:flex><span>        .macOS(.v12)
+</span></span><span style=display:flex><span>    ],
+</span></span><span style=display:flex><span>    dependencies: [
+</span></span><span style=display:flex><span>        .package(url: <span style=color:#e6db74>&#34;https://github.com/hummingbird-project/hummingbird&#34;</span>, from: <span style=color:#e6db74>&#34;1.5.0&#34;</span>),
+</span></span><span style=display:flex><span>        .package(url: <span style=color:#e6db74>&#34;https://github.com/apple/swift-argument-parser&#34;</span>,from: <span style=color:#e6db74>&#34;1.2.0&#34;</span>),
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Database dependency</span>
+</span></span><span style=display:flex><span>        .package(url: <span style=color:#e6db74>&#34;https://github.com/feathercms/hummingbird-db&#34;</span>, branch: <span style=color:#e6db74>&#34;main&#34;</span>)
+</span></span><span style=display:flex><span>    ],
+</span></span><span style=display:flex><span>    targets: [
+</span></span><span style=display:flex><span>        .executableTarget(
+</span></span><span style=display:flex><span>            name: <span style=color:#e6db74>&#34;parkAPI&#34;</span>,
+</span></span><span style=display:flex><span>            dependencies: [
+</span></span><span style=display:flex><span>                .product(name: <span style=color:#e6db74>&#34;ArgumentParser&#34;</span>, package: <span style=color:#e6db74>&#34;swift-argument-parser&#34;</span>),
+</span></span><span style=display:flex><span>                .product(name: <span style=color:#e6db74>&#34;Hummingbird&#34;</span>, package: <span style=color:#e6db74>&#34;hummingbird&#34;</span>),
+</span></span><span style=display:flex><span>                .product(name: <span style=color:#e6db74>&#34;HummingbirdFoundation&#34;</span>, package: <span style=color:#e6db74>&#34;hummingbird&#34;</span>),
+</span></span><span style=display:flex><span>                <span style=color:#75715e>// Database dependencies</span>
+</span></span><span style=display:flex><span>                .product(name: <span style=color:#e6db74>&#34;HummingbirdDatabase&#34;</span>, package: <span style=color:#e6db74>&#34;hummingbird-db&#34;</span>),
+</span></span><span style=display:flex><span>                .product(name: <span style=color:#e6db74>&#34;HummingbirdSQLiteDatabase&#34;</span>, package: <span style=color:#e6db74>&#34;hummingbird-db&#34;</span>),
+</span></span><span style=display:flex><span>            ],
+</span></span><span style=display:flex><span>            swiftSettings: [
+</span></span><span style=display:flex><span>                .unsafeFlags(
+</span></span><span style=display:flex><span>                    [<span style=color:#e6db74>&#34;-cross-module-optimization&#34;</span>],
+</span></span><span style=display:flex><span>                    .when(configuration: .release)
+</span></span><span style=display:flex><span>                )
+</span></span><span style=display:flex><span>            ]
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>    ]
+</span></span><span style=display:flex><span>)
+</span></span></code></pre></div><h3 id=step-42-use-concurrency-in-appswift>Step 4.2 Use concurrency in <code>App.swift</code><a hidden class=anchor aria-hidden=true href=#step-42-use-concurrency-in-appswift>#</a></h3><p>Add <code>async</code> to <code>function run()</code> and <code>await</code> to <code>app.configure</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>ArgumentParser</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Hummingbird</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>@main
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>App</span>: AsyncParsableCommand, AppArguments {
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    @Option(name: .shortAndLong)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> hostname: String = <span style=color:#e6db74>&#34;127.0.0.1&#34;</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    @Option(name: .shortAndLong)
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>var</span> port: Int = <span style=color:#ae81ff>8080</span>
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>run</span>() async <span style=color:#66d9ef>throws</span> {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> app = HBApplication(
+</span></span><span style=display:flex><span>            configuration: .<span style=color:#66d9ef>init</span>(
+</span></span><span style=display:flex><span>                address: .hostname(hostname, port: port),
+</span></span><span style=display:flex><span>                serverName: <span style=color:#e6db74>&#34;Hummingbird&#34;</span>
+</span></span><span style=display:flex><span>            )
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> await app.configure()
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> app.start()
+</span></span><span style=display:flex><span>        app.wait()
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>We need to use <a href=https://apple.github.io/swift-argument-parser/documentation/argumentparser/asyncparsablecommand/><code>AsyncParsableCommand</code></a> and <code>AppArguments</code> protocols.</p><h3 id=step-43-create-a-database-configuration-file>Step 4.3 Create a database configuration file<a hidden class=anchor aria-hidden=true href=#step-43-create-a-database-configuration-file>#</a></h3><p>Add a new file, with name <code>DatabaseSetup.swift</code> file under a new <code>Database</code> folder under <code>Source/parkAPI/</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Hummingbird</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>HummingbirdSQLiteDatabase</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>extension</span> <span style=color:#a6e22e>HBApplication</span> {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>setupDatabase</span>() async <span style=color:#66d9ef>throws</span> {
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Name and location of the SQLite database file</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> path = <span style=color:#e6db74>&#34;./hb-parks.sqlite&#34;</span>
+</span></span><span style=display:flex><span>        services.setUpSQLiteDatabase(
+</span></span><span style=display:flex><span>            path: path,
+</span></span><span style=display:flex><span>            threadPool: threadPool,
+</span></span><span style=display:flex><span>            eventLoopGroup: eventLoopGroup,
+</span></span><span style=display:flex><span>            logger: logger
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Create the database table</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> await db.execute(
+</span></span><span style=display:flex><span>            .<span style=color:#66d9ef>init</span>(unsafeSQL:
+</span></span><span style=display:flex><span>                           <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                           CREATE TABLE IF NOT EXISTS parks (
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                               &#34;</span>id<span style=color:#e6db74>&#34; uuid PRIMARY KEY,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                               &#34;</span>latitude<span style=color:#e6db74>&#34; double NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                               &#34;</span>longitude<span style=color:#e6db74>&#34; double NOT NULL,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                               &#34;</span>name<span style=color:#e6db74>&#34; text NOT NULL
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                           );
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                           &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>                 )
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=step-44-call-the-setupdatabase-function>Step 4.4 Call the <code>setupDatabase</code> function<a hidden class=anchor aria-hidden=true href=#step-44-call-the-setupdatabase-function>#</a></h3><p>Add <code>try await setupDatabase()</code> to <code>Application+configure.swift</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Hummingbird</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>HummingbirdFoundation</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>protocol</span> <span style=color:#a6e22e>AppArguments</span> {}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>public</span> <span style=color:#66d9ef>extension</span> <span style=color:#a6e22e>HBApplication</span> {
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>configure</span>() async <span style=color:#66d9ef>throws</span> {
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Setup the database</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> await setupDatabase()
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Set encoder and decoder</span>
+</span></span><span style=display:flex><span>        encoder = JSONEncoder()
+</span></span><span style=display:flex><span>        decoder = JSONDecoder()
+</span></span><span style=display:flex><span>       
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Logger</span>
+</span></span><span style=display:flex><span>        logger.logLevel = .debug
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Middleware</span>
+</span></span><span style=display:flex><span>        middleware.add(HBLogRequestsMiddleware(.debug))
+</span></span><span style=display:flex><span>        middleware.add(HBCORSMiddleware(
+</span></span><span style=display:flex><span>            allowOrigin: .originBased,
+</span></span><span style=display:flex><span>            allowHeaders: [<span style=color:#e6db74>&#34;Content-Type&#34;</span>],
+</span></span><span style=display:flex><span>            allowMethods: [.GET, .OPTIONS, .POST, .DELETE, .PATCH]
+</span></span><span style=display:flex><span>        ))
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        router.<span style=color:#66d9ef>get</span>(<span style=color:#e6db74>&#34;/&#34;</span>) { <span style=color:#66d9ef>_</span> <span style=color:#66d9ef>in</span>
+</span></span><span style=display:flex><span>            <span style=color:#e6db74>&#34;The server is running...🚀&#34;</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// Additional routes are defined in the controller</span>
+</span></span><span style=display:flex><span>        <span style=color:#75715e>// We want our server to respond on &#34;api/v1/parks&#34;</span>
+</span></span><span style=display:flex><span>        ParkController().addRoutes(to: router.group(<span style=color:#e6db74>&#34;api/v1/parks&#34;</span>))
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=step-45-create-the-park-model>Step 4.5 Create the park model<a hidden class=anchor aria-hidden=true href=#step-45-create-the-park-model>#</a></h3><p>Add the <code>Park.swift</code> under <code>/Source/parkAPI/Models</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Foundation</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Hummingbird</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>Park</span>: Codable {
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> id: UUID
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> latitude: Double
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> longitude: Double
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>let</span> name: String
+</span></span><span style=display:flex><span>    
+</span></span><span style=display:flex><span>    <span style=color:#66d9ef>init</span>(id: UUID, latitude: Double, longitude: Double, name: String) {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>self</span>.id = id
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>self</span>.latitude = latitude
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>self</span>.longitude = longitude
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>self</span>.name = name
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>extension</span> <span style=color:#a6e22e>Park</span>: HBResponseCodable {}
+</span></span></code></pre></div><h3 id=step-46-create-the-park-controller>Step 4.6 Create the park controller<a hidden class=anchor aria-hidden=true href=#step-46-create-the-park-controller>#</a></h3><p>The <code>Controller</code> receives an input from the users, then processes the user&rsquo;s data with the help of <code>Model</code> and passes the results back. Add <code>ParkController.swift</code> to a new <code>Controllers</code> folder under <code>Source/parkAPI/</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Foundation</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>Hummingbird</span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>import</span> <span style=color:#a6e22e>HummingbirdDatabase</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>extension</span> <span style=color:#a6e22e>UUID</span>: LosslessStringConvertible {
+</span></span><span style=display:flex><span>   
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>public</span> <span style=color:#66d9ef>init</span>?(<span style=color:#66d9ef>_</span> description: String) {
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>self</span>.<span style=color:#66d9ef>init</span>(uuidString: description)
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span>}
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>ParkController</span> {
+</span></span><span style=display:flex><span>   <span style=color:#75715e>// Define the table in the databse</span>
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>let</span> tableName = <span style=color:#e6db74>&#34;parks&#34;</span>
+</span></span><span style=display:flex><span>   
+</span></span><span style=display:flex><span>   <span style=color:#75715e>// The routes for CRUD operations</span>
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>addRoutes</span>(to group: HBRouterGroup) {
+</span></span><span style=display:flex><span>       group
+</span></span><span style=display:flex><span>           .<span style=color:#66d9ef>get</span>(use: list)
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span>   
+</span></span><span style=display:flex><span>   <span style=color:#75715e>// Return all parks</span>
+</span></span><span style=display:flex><span>   <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>list</span>(req: HBRequest) async <span style=color:#66d9ef>throws</span> -&gt; [Park] {
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>let</span> sql = <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>               SELECT * FROM parks
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>       &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>let</span> query = HBDatabaseQuery(unsafeSQL: sql)
+</span></span><span style=display:flex><span>       
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>try</span> await req.db.execute(query, rowType: Park.<span style=color:#66d9ef>self</span>)
+</span></span><span style=display:flex><span>   }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>In the controller file, define the table of the database you want to use, ideally it is the same as you defined in the <code>DatabaseSetup.swift</code> file.</p><p>Use <a href=https://hummingbird-project.github.io/hummingbird-docs/documentation/hummingbirdauth/hbroutergroup><code>HBRouterGroup</code></a> to collect all routes under single path.</p><h4 id=get---all-parks>GET - all parks<a hidden class=anchor aria-hidden=true href=#get---all-parks>#</a></h4><p>Start with listing all elements: <code>.get(use: list)</code> Where <code>get</code> refers to <code>GET</code> method and <code>use</code> to the function where you describe what supposed to happen, if you call that endpoint.</p><p>The <code>list()</code> function returns with the array of <code>Park</code> model.</p><h4 id=get---park-with-id>GET - park with {id}<a hidden class=anchor aria-hidden=true href=#get---park-with-id>#</a></h4><p>Show park with specified id: <code>.get(":id", use: show)</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span><span style=color:#66d9ef>func</span> <span style=color:#a6e22e>show</span>(req: HBRequest) async <span style=color:#66d9ef>throws</span> -&gt; Park? {
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>let</span> id = <span style=color:#66d9ef>try</span> req.parameters.require(<span style=color:#e6db74>&#34;id&#34;</span>, <span style=color:#66d9ef>as</span>: UUID.<span style=color:#66d9ef>self</span>)
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>let</span> sql = <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>               SELECT * FROM parks WHERE id = :id:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>       &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>let</span> query = HBDatabaseQuery(
+</span></span><span style=display:flex><span>           unsafeSQL: sql,
+</span></span><span style=display:flex><span>           bindings: [<span style=color:#e6db74>&#34;id&#34;</span>: id]
+</span></span><span style=display:flex><span>       )
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>let</span> rows = <span style=color:#66d9ef>try</span> await req.db.execute(query, rowType: Park.<span style=color:#66d9ef>self</span>)
+</span></span><span style=display:flex><span>       
+</span></span><span style=display:flex><span>       <span style=color:#66d9ef>return</span> rows.first
+</span></span><span style=display:flex><span>   }
+</span></span></code></pre></div><h4 id=post---create-park>POST - create park<a hidden class=anchor aria-hidden=true href=#post---create-park>#</a></h4><p>Create new park: <code>.post(options: .editResponse, use: create)</code>.</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>create</span>(req: HBRequest) async <span style=color:#66d9ef>throws</span> -&gt; Park {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>CreatePark</span>: Decodable {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> latitude: Double
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> longitude: Double
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>let</span> name: String
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> park = <span style=color:#66d9ef>try</span> req.decode(<span style=color:#66d9ef>as</span>: CreatePark.<span style=color:#66d9ef>self</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> id = UUID()
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> row = Park(
+</span></span><span style=display:flex><span>            id: id,
+</span></span><span style=display:flex><span>            latitude: park.latitude,
+</span></span><span style=display:flex><span>            longitude: park.longitude,
+</span></span><span style=display:flex><span>            name: park.name
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> sql = <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                INSERT INTO
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    parks (id, latitude, longitude, name)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                VALUES
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    (:id:, :latitude:, :longitude:, :name:)
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>        
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> await req.db.execute(.<span style=color:#66d9ef>init</span>(unsafeSQL: sql, bindings: row))
+</span></span><span style=display:flex><span>        req.response.status = .created
+</span></span></code></pre></div><h4 id=patch---update-park-with-id>PATCH - update park with {id}<a hidden class=anchor aria-hidden=true href=#patch---update-park-with-id>#</a></h4><p>Update park with specified id: <code>‌.patch(":id", use: update)</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span>   <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>update</span>(req: HBRequest) async <span style=color:#66d9ef>throws</span> -&gt; HTTPResponseStatus {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>struct</span> <span style=color:#a6e22e>UpdatePark</span>: Decodable {
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>var</span> latitude: Double?
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>var</span> longitude: Double?
+</span></span><span style=display:flex><span>            <span style=color:#66d9ef>var</span> name: String?
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> id = <span style=color:#66d9ef>try</span> req.parameters.require(<span style=color:#e6db74>&#34;id&#34;</span>, <span style=color:#66d9ef>as</span>: UUID.<span style=color:#66d9ef>self</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> park = <span style=color:#66d9ef>try</span> req.decode(<span style=color:#66d9ef>as</span>: UpdatePark.<span style=color:#66d9ef>self</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> sql = <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    UPDATE
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                        parks
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                      SET
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                          &#34;</span>latitude<span style=color:#e6db74>&#34; = CASE WHEN :1: IS NOT NULL THEN :1: ELSE &#34;</span>latitude<span style=color:#e6db74>&#34; END,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                          &#34;</span>longitude<span style=color:#e6db74>&#34; = CASE WHEN :2: IS NOT NULL THEN :2: ELSE &#34;</span>longitude<span style=color:#e6db74>&#34; END,
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                          &#34;</span>name<span style=color:#e6db74>&#34; = CASE WHEN :3: IS NOT NULL THEN :3: ELSE &#34;</span>name<span style=color:#e6db74>&#34; END
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                      WHERE
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                          id = :0:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> await req.db.execute(
+</span></span><span style=display:flex><span>            .<span style=color:#66d9ef>init</span>(
+</span></span><span style=display:flex><span>                unsafeSQL:
+</span></span><span style=display:flex><span>                    sql,
+</span></span><span style=display:flex><span>                bindings:
+</span></span><span style=display:flex><span>                    id, park.latitude, park.longitude, park.name
+</span></span><span style=display:flex><span>            )
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> .ok
+</span></span><span style=display:flex><span>    }
+</span></span></code></pre></div><p>As in the <code>DatabaseSetup.swift</code> file we defined that none of table columns can be <code>NULL</code>, we need to check that the request contains all values of only some of them and update the columns respectively.</p><h4 id=delete---delete-park-with-id>DELETE - delete park with {id}<a hidden class=anchor aria-hidden=true href=#delete---delete-park-with-id>#</a></h4><p>Delete park with specified id: <code>.delete(":id", use: deletePark)</code></p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-swift data-lang=swift><span style=display:flex><span>    <span style=color:#66d9ef>func</span> <span style=color:#a6e22e>deletePark</span>(req: HBRequest) async <span style=color:#66d9ef>throws</span> -&gt; HTTPResponseStatus {
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> id = <span style=color:#66d9ef>try</span> req.parameters.require(<span style=color:#e6db74>&#34;id&#34;</span>, <span style=color:#66d9ef>as</span>: UUID.<span style=color:#66d9ef>self</span>)
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>let</span> sql = <span style=color:#e6db74>&#34;&#34;&#34;
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                    DELETE FROM parks WHERE id = :0:
+</span></span></span><span style=display:flex><span><span style=color:#e6db74>                &#34;&#34;&#34;</span>
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>try</span> await req.db.execute(
+</span></span><span style=display:flex><span>            .<span style=color:#66d9ef>init</span>(
+</span></span><span style=display:flex><span>                unsafeSQL: sql,
+</span></span><span style=display:flex><span>                bindings: id
+</span></span><span style=display:flex><span>            )
+</span></span><span style=display:flex><span>        )
+</span></span><span style=display:flex><span>        <span style=color:#66d9ef>return</span> .ok
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>Our final folder structure looks like this:</p><pre tabindex=0><code>.
+├── Package.swift
+├── README.md
+└── Sources
+    └── parkAPI
+        ├── App.swift
+        ├── Application+configure.swift
+        ├── Controllers
+        │   └── ParkController.swift
+        ├── Database
+        │   └── DatabaseSetup.swift
+        └── Models
+            └── Park.swift
+</code></pre><h3 id=step-5-run-the-api-server>Step 5: Run the API server:<a hidden class=anchor aria-hidden=true href=#step-5-run-the-api-server>#</a></h3><p><code>swift run parkAPI</code></p><p>You can reach the server on: <code>http://127.0.0.1:8080</code></p><h3 id=summary>Summary<a hidden class=anchor aria-hidden=true href=#summary>#</a></h3><p>I was impressed how easily and quickly I could build a working API server using <a href=https://github.com/hummingbird-project/hummingbird>Hummingbird</a> and FeatherCMS&rsquo;s <a href=https://github.com/FeatherCMS/hummingbird-db>Database Component</a>. Building and running the project took very minimal time comparing to Vapor. I highly recommend to try Hummingbird project in case you want something light and modular on Server side Swift.</p><p>You can find the source code <a href=https://github.com/kicsipixel/parkAPI>here</a>.</p></div><footer class=post-footer><ul class=post-tags><li><a href=https://kicsipixel.github.io/tags/iOS/>iOS</a></li><li><a href=https://kicsipixel.github.io/tags/macOS/>macOS</a></li><li><a href=https://kicsipixel.github.io/tags/Swift/>Swift</a></li><li><a href=https://kicsipixel.github.io/tags/server/>server</a></li><li><a href=https://kicsipixel.github.io/tags/git/>git</a></li><li><a href=https://kicsipixel.github.io/tags/hummingbird/>hummingbird</a></li><li><a href=https://kicsipixel.github.io/tags/api/>api</a></li></ul><nav class=paginav><a class=next href=https://kicsipixel.github.io/posts/2023/2023-05-25-lessons/><span class=title>Next Page »</span><br><span>I tried and failed</span></a></nav></footer></article></main><footer class=footer><span>&copy; 2023 <a href=https://kicsipixel.github.io>Flying blind - coding nonsense</a></span>
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg></a><script>let menu=document.getElementById("menu");menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove("dark"),localStorage.setItem("pref-theme","light")):(document.body.classList.add("dark"),localStorage.setItem("pref-theme","dark"))})</script><script>document.querySelectorAll("pre > code").forEach(e=>{const n=e.parentNode.parentNode,t=document.createElement("button");t.classList.add("copy-code"),t.innerText="copy";function s(){t.innerText="copied!",setTimeout(()=>{t.innerText="copy"},2e3)}t.addEventListener("click",t=>{if("clipboard"in navigator){navigator.clipboard.writeText(e.textContent),s();return}const n=document.createRange();n.selectNodeContents(e);const o=window.getSelection();o.removeAllRanges(),o.addRange(n);try{document.execCommand("copy"),s()}catch{}o.removeRange(n)}),n.classList.contains("highlight")?n.appendChild(t):n.parentNode.firstChild==n||(e.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName=="TABLE"?e.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(t):e.parentNode.appendChild(t))})</script></body></html>
