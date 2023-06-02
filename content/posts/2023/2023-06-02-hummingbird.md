@@ -6,6 +6,8 @@ author: ["Szabolcs Tóth"]
 draft: false
 ---
 
+*Special thanks to [Tibor Bödecs](https://twitter.com/tiborbodecs) for his patience and guidence during the writing of this tutorial.*
+
 Server side Swift has been available since end of 2015. The idea was behind the development that you can use the same language for RESTful APIs, desktop and mobile applications. With the evolution of the Swift language, the different Swift web frameworks got more robust and complex. 
 
 That's why I was happy to read [Tib's excellent article](https://theswiftdev.com/beginners-guide-to-server-side-swift-using-the-hummingbird-framework) about a new HTTP server library written in Swift, [Hummingbird](https://github.com/hummingbird-project/hummingbird). I immediately liked the concept of modularity, so decided to create a tutorial to show its simplicity.
