@@ -250,11 +250,8 @@ import HummingbirdSQLiteDatabase
 
 extension HBApplication {
     func setupDatabase() async throws {
-        
-        // Name and location of the SQLite database file
-        let path = "./hb-parks.sqlite"
         services.setUpSQLiteDatabase(
-            path: path,
+            storage: .file(path: "./hb-parks.sqlite"),
             threadPool: threadPool,
             eventLoopGroup: eventLoopGroup,
             logger: logger
